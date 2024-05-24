@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application") version "8.2.0"
-    kotlin("android") version "2.0.0"
-    kotlin("plugin.compose") version "2.0.0"
-    id("org.jetbrains.compose") version "1.6.10"
+    kotlin("android") version "1.8.20"
+//    kotlin("plugin.compose") version "1.8.20"
+//    id("org.jetbrains.compose") version "1.6.10"
 }
 
 repositories {
@@ -26,7 +26,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.4.6"
     }
 
     compileOptions {
@@ -47,8 +47,17 @@ android {
 
 
 kotlin {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_17
+//    compilerOptions {
+//        jvmTarget = JvmTarget.JVM_17
+//    }
+    target {
+        compilations.all {
+            compileTaskProvider.configure {
+                kotlinOptions {
+                    jvmTarget = "17"
+                }
+            }
+        }
     }
 }
 
