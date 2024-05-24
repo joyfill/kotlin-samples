@@ -1,9 +1,9 @@
 package io.joyfill.sample.ui
 
+import joyfill.Document
 import joyfill.buildDocument
-import kotlinx.serialization.internal.throwMissingFieldException
 
-class DocumentService {
+object service {
     fun getEmployeeDocument() = buildDocument {
         name("Employee Document")
 
@@ -16,5 +16,9 @@ class DocumentService {
         page("Contact Information")
         text("Next of Kin")
         text("Phone Number")
+    }
+
+    fun save(document: Document) {
+        println("Document hase been saved")
     }
 }
