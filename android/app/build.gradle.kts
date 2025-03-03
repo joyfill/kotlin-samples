@@ -1,6 +1,7 @@
 plugins {
-    id("com.android.application") version "8.2.0"
-    kotlin("android") version "1.8.20"
+    id("com.android.application") version "8.2.2"
+    kotlin("android") version "2.1.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.10"
 }
 
 repositories {
@@ -21,9 +22,9 @@ android {
         versionName = "1.0"
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.6"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.4.6"
+//    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -45,16 +46,14 @@ android {
 kotlin {
     target {
         compilations.all {
-            compileTaskProvider.configure {
-                kotlinOptions {
-                    jvmTarget = "17"
-                }
+            kotlinOptions {
+                jvmTarget = "17"
             }
         }
     }
 }
 
-fun joyfill(module: String) = "io.joyfill:$module:1.0.0"
+fun joyfill(module: String) = "io.joyfill:$module:1.1.14"
 
 dependencies {
     implementation(joyfill("compose"))?.because("We need to use joyfill form composables")

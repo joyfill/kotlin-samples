@@ -15,6 +15,8 @@ Select the SDK version that you want to use.
 Note: We recommend using the default (latest) SDK version, but you can choose an older version if needed.
 Choose the Joyfill libraries you want to use.
 
+Get the latest version from [Maven Central](https://mvnrepository.com/artifact/io.joyfill/compose)
+
 ## Getting Started
 
 ### Show a Joyfill Document with the `Form` Composable

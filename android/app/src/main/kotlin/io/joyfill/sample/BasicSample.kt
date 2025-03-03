@@ -18,7 +18,7 @@ fun BasicSample() {
     val document = remember { service.getEmployeeDocument() }
 
     // Give it to a Document Editor
-    val editor = rememberEditor(document)
+    val editor = rememberEditor(document) // or rememberEditor("<joydoc goes here>")
 
     // Render the form with the editor
     Column(modifier = Modifier.padding(8.dp)) {
