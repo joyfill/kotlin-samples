@@ -1,8 +1,6 @@
 package io.joyfill.sample
 
 import androidx.compose.runtime.Composable
-import io.joyfill.sample.cases.CollectionFieldSample
-import io.joyfill.sample.cases.DynamicJSONSample
 import io.joyfill.sample.cases.ImageSample
 import kiota.FileManager
 
