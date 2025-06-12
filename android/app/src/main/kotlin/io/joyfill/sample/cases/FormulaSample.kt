@@ -16,27 +16,34 @@ internal fun FormulaSample() = ThemedSample {
             //-----------------------------------------
             // Students  report  testing IF, and SUM
             //-----------------------------------------
-//            number ("Major Science - 1, Commerce - 2", identifier = "major", value = 1.0)
-//            number("Mathematics", identifier = "math", value = 100.0)
-//            number("Physics", identifier = "phy", value = 100.0)
-//            number("Book-keeping", identifier = "bk", value = 40.0)
-//            number("Average", formula = "if({major} == 1, sum({math}, {phy}), sum({math}, {bk}))", value = 0.0, identifier = "sumMarks")
+//            number ("Major Science - 1, Commerce - 2", id = "major", value = 1.0)
+//            number("Mathematics", id = "math", value = 100.0)
+//            number("Physics", id = "phy", value = 100.0)
+//            number("Book-keeping", id = "bk", value = 40.0)
+//            number("Average", formula = "if({major} == 1, sum({math}, {phy}), sum({math}, {bk}))", value = 0.0, id = "sumMarks")
 //            text ("General comment", formula = "if({sumMarks} >= 150, \"Excellent\", \"Alright\")", value = "", readonly = true)
             //-----------------------------------------
             // Voting  ability testing  IF and AND
 //            //-----------------------------------------
-//            number("Year of birth", identifier = "yob", value = 2007.0)
-//            number("Nationality(1 - American, 2 - Tanzanian)", identifier = "nationality", value = 1.0)
+//            number("Year of birth", id = "yob", value = 2007.0)
+//            number("Nationality(1 - American, 2 - Tanzanian)", id = "nationality", value = 1.0)
 //            text("American Voting Status",  formula = "if(and({yob} <= 2007, {nationality} == 1), \"Eligible\", \"Not Eligible\")", value = "", readonly = true)
             //-----------------------------------------
             // Work title and age: testing  IF and EMPTY
             //-----------------------------------------
-            text("Work Title", id = "title")
-            number("Age", id = "age")
-            text(
-                title = "Description",
-                formula = "if(empty({title}), 'Please Enter your title', concat('Hi, your age is: ',{age}, ' Title is: ',{title}))"
+//            text("Work Title", id = "title")
+//            number("Age", id = "age")
+//            text(
+//                title = "Description",
+//                formula = "if(empty({title}), 'Please Enter your title', concat('Hi, your age is: ',{age}, ' Title is: ',{title}))"
+//            )
+            date(
+                title = "Date of Birth",
+                id = "dob",
+                format = "YYYY-MM-DD",
+                value = 1748811355000L,
             )
+            text(title = "Year", id = "year", formula = "concat('Your year of birth is:', year({dob}))")
         }
     }
 
@@ -44,9 +51,7 @@ internal fun FormulaSample() = ThemedSample {
         editor = rememberDocumentEditor(
             document = document,
             functions = {
-//                include(math)
-//                include(logic)
-//                include(string)
+//                include(your_function)
             },
             onChange = { (changelogs, document) ->
                 changelogs.forEach {

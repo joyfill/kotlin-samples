@@ -11,18 +11,20 @@ import joyfill2.Form
 import joyfill2.Mode
 import joyfill2.buildDocument
 import joyfill2.rememberDocumentEditor
-import kotlin.random.Random
+import kiota.FileManager
+import kiota.file.mime.Application
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-internal fun CollectionFieldSample() = ThemedSample {
+internal fun CollectionBulkInputPerf(files: FileManager) = ThemedSample {
     val document = remember {
         buildDocument {
             page("Page 1")
             collection("School Data") {
-                table("Schools", id = "school", children = listOf("Teachers"), required = true) {
-                    text(title = "First Name", required = true)
-                    text(title = "Last Name", required = true)
-                    text(title = "Location", required = true)
+                table("Schools", id = "school", children = listOf("Teachers"), root = true) {
+                    text(title = "Name", value = "Youssef")
+                    text(title = "Location")
                     image("image")
                     select(
                         title = "Superheroes",
@@ -30,7 +32,7 @@ internal fun CollectionFieldSample() = ThemedSample {
                         value = listOf("Batman", "Superman"),
                     )
                 }
-                table("Teachers", id = "teachers", children = listOf("Students"), required = true) {
+                table("Teachers", id = "teachers", children = listOf("Students")) {
                     text("Name")
                     number("Age")
                 }
@@ -46,33 +48,35 @@ internal fun CollectionFieldSample() = ThemedSample {
         }
     }
 
+
     val editor = rememberDocumentEditor(document)
 
     LaunchedEffect(Unit) {
-        val names = listOf("John", "", "", "", "", "Raiden", "", "", "Jin", "")
-        val cities = listOf("New York", "Los Angeles", "Chicago", "Houston", "Phoenix")
+        launch(Dispatchers.Default) {
+            val names = listOf("John", "", "", "", "", "Raiden", "", "", "Jin", "")
+            val cities = listOf("New York", "Los Angeles", "Chicago", "Houston", "Phoenix")
 
-        val N = 5
+            val N = 5000
 
-        repeat(N) {
-            val collection = editor.fields.collection("School Data")
-            val table = collection?.root()
-            val row = table?.rows?.append()
-            val first = names.random()
-            val last = (names - first).random()
-            row?.text("First Name")?.value(first)
-            row?.text("Last Name")?.value(last)
-            row?.text("Location")?.value(cities.random())
-            row?.text("Address")?.value("$first's Avenue")
+            repeat(N) {
+                val collection = editor.fields.collection("School Data")
+                val table = collection?.root()
+                val row = table?.rows?.append()
+                val first = names.random()
+                val last = (names - first).random()
+                row?.text("Name")?.value("$first $last")
+                row?.text("Location")?.value(cities.random())
+                row?.text("Address")?.value("$first's Avenue")
 
-            val teachers = row?.tables?.find("Teachers")
-            repeat(Random.nextInt(N) + 1) {
-                val r = teachers?.rows?.append()
-                r?.text("Name")?.value(names.random())
-                repeat(Random.nextInt(N) + 1) {
-                    r?.tables?.find("Students")?.rows?.append()?.text("Parent")
-                        ?.value("${names.random()}${names.random()}")
-                }
+//            val teachers = row?.tables?.find("Teachers")
+//            repeat(Random.nextInt(N) + 1) {
+//                val r = teachers?.rows?.append()
+//                r?.text("Name")?.value(names.random())
+//                repeat(Random.nextInt(N) + 1) {
+//                    r?.tables?.find("Students")?.rows?.append()?.text("Parent")
+//                        ?.value("${names.random()}${names.random()}")
+//                }
+//            }
             }
         }
     }
@@ -81,7 +85,7 @@ internal fun CollectionFieldSample() = ThemedSample {
         editor = editor,
         showUnsupportedFields = true,
         showUnsupportedColumns = true,
-        showRowNumbers = true,
+        showRowNumbers = false,
         modifier = Modifier.fillMaxWidth(),
         mode = Mode.fill,
         onUpload = {
