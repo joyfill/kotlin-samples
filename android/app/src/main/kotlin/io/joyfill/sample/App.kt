@@ -1,7 +1,7 @@
 package io.joyfill.sample
 
 import androidx.compose.runtime.Composable
-import io.joyfill.sample.cases.DemoSample
+import io.joyfill.sample.cases.FormulaSample
 import kiota.FileManager
 
 @Composable
@@ -18,7 +18,7 @@ fun App(files: FileManager) {
 //    ChartSample()
 //    BlockSample()
 //    RichTextSample()
-    DemoSample()
+//    DemoSample()
 //    UptickSample()
 //    ConditionalLogicSample()
 //    CollectionConditionalLogic()
@@ -30,5 +30,5 @@ fun App(files: FileManager) {
 //    CollectionFieldSample()
 //    DynamicJSONSample(files)
 //    CollectionBulkInputPerf(files)
-//    FormulaSample()
+    FormulaSample()
 }

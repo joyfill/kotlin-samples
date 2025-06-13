@@ -31,19 +31,19 @@ internal fun FormulaSample() = ThemedSample {
             //-----------------------------------------
             // Work title and age: testing  IF and EMPTY
             //-----------------------------------------
-//            text("Work Title", id = "title")
-//            number("Age", id = "age")
-//            text(
-//                title = "Description",
-//                formula = "if(empty({title}), 'Please Enter your title', concat('Hi, your age is: ',{age}, ' Title is: ',{title}))"
-//            )
+            text("Work Title", id = "title")
+            number("Age", id = "age")
+            text(
+                title = "Description",
+                formula = "if(empty(title), 'Please Enter your title', concat('Hi, your age is: ',age, ' Title is: ',title))"
+            )
             date(
                 title = "Date of Birth",
                 id = "dob",
                 format = "YYYY-MM-DD",
-                value = 1748811355000L,
+//                value = 1748811355000L,
             )
-            text(title = "Year", id = "year", formula = "concat('Your year of birth is:', year({dob}))")
+            text(title = "Year", formula = "concat('Your year of birth is: ', sub(year(timestamp()),year(dob)))")
         }
     }
 
@@ -53,12 +53,6 @@ internal fun FormulaSample() = ThemedSample {
             functions = {
 //                include(your_function)
             },
-            onChange = { (changelogs, document) ->
-                changelogs.forEach {
-                    println(it.change::class.simpleName)
-                    println(it.change)
-                }
-            }
         ),
         mode = Mode.fill,
         onUpload = {
