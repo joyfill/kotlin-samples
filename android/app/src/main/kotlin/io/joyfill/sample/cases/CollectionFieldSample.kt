@@ -15,6 +15,7 @@ import kotlin.random.Random
 
 @Composable
 internal fun CollectionFieldSample() = ThemedSample {
+    val cities = listOf("New York", "Los Angeles", "Chicago", "Houston", "Phoenix")
     val document = remember {
         buildDocument {
             page("Page 1")
@@ -22,13 +23,14 @@ internal fun CollectionFieldSample() = ThemedSample {
                 table("Schools", id = "school", children = listOf("Teachers"), required = true) {
                     text(title = "First Name", required = true)
                     text(title = "Last Name", required = true)
-                    text(title = "Location", required = true)
+                    dropdown(title = "Location", options = cities, required = true)
                     image("image")
                     select(
                         title = "Superheroes",
                         options = listOf("Batman", "Superman", "Spiderman", "Ironman"),
                         value = listOf("Batman", "Superman"),
                     )
+                    barcode("Barcode")
                 }
                 table("Teachers", id = "teachers", children = listOf("Students"), required = true) {
                     text("Name")
@@ -49,8 +51,7 @@ internal fun CollectionFieldSample() = ThemedSample {
     val editor = rememberDocumentEditor(document)
 
     LaunchedEffect(Unit) {
-        val names = listOf("John", "", "", "", "", "Raiden", "", "", "Jin", "")
-        val cities = listOf("New York", "Los Angeles", "Chicago", "Houston", "Phoenix")
+        val names = listOf("John", "Jame", "Jamie", "Roger", "Kuku", "Raiden", "Proper", "Sad", "Jin", "")
 
         val N = 5
 

@@ -3,10 +3,6 @@ package io.joyfill.sample.cases
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import io.joyfill.sample.ThemedSample
-//import joyfill.Form
-//import joyfill.Mode
-//import joyfill.buildDocument
-//import joyfill.rememberEditor
 import joyfill2.Form
 import joyfill2.Mode
 import joyfill2.buildDocument
