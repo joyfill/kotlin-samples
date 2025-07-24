@@ -4,7 +4,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +20,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun DialogContent(
     modifier: Modifier = Modifier,
-    changeLogs: List<String>,
+    logs: List<String>,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val localColor = LocalContentColor.current
@@ -30,10 +29,10 @@ internal fun DialogContent(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
-        itemsIndexed(changeLogs) { index, changeLog ->
-            ChangeLogItem(
+        itemsIndexed(logs) { index, changeLog ->
+            LogItem(
                 index = index + 1,
-                changeLog = changeLog,
+                log = changeLog,
                 modifier = Modifier
                     .clickable {
                         clipboardManager.setText(AnnotatedString(changeLog))

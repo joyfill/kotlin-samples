@@ -12,9 +12,7 @@ internal fun DateTimeSample() = ThemedSample {
     val document = buildDocument {
         date(
             title = "D.O.B",
-            value = 1748811355000L,
-//            value = 0,
-            format = "DD-MM-YYYY hh:mm"
+            format = "hh:mma"
 //            format = "DD-MM-YYYY"
         )
     }

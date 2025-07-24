@@ -71,6 +71,7 @@ internal fun ImageSample(files: FileManager) = ThemedSample {
         editor = editor,
         mode = Mode.fill,
         onUpload = { event ->
+            val currentSource = event.source
             val local = when (val file = files.picker(listOf(Image.PNG, Image.JPG, Image.JPEG), limit = 50.MB).open()) {
                 is File -> files.toBase64Url(file)
                 else -> return@Form emptyList()
@@ -78,7 +79,8 @@ internal fun ImageSample(files: FileManager) = ThemedSample {
             scope.launch {
                 delay(5000)
                 val remote = randomImageUrl()
-                editor.replace(event.source.component.id, local, remote)
+                if (currentSource == null) return@launch
+                editor.replace(currentSource.component.id, local, remote)
             }
             listOf(local)
         }

@@ -1,7 +1,8 @@
 package io.joyfill.sample
 
 import androidx.compose.runtime.Composable
-import io.joyfill.sample.cases.ColumnCheck
+import io.joyfill.sample.cases.DynamicJSONSample
+import io.joyfill.sample.cases.MasterSample
 import kiota.FileManager
 
 @Composable
@@ -28,8 +29,10 @@ fun App(files: FileManager) {
 //    ShowAndTell()
 //    ImageReplaceSample()
 //    CollectionFieldSample()
+//    ChangeHandlerSample(files)
+//    HintHandlerSample(files)
 //    DynamicJSONSample(files)
-    ColumnCheck()
+      MasterSample(files)
 //    CollectionBulkInputPerf(files)
 //    FormulaSample()
 }
