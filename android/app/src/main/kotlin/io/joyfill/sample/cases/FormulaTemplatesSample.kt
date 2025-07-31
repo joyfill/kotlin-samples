@@ -9,11 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.joyfill.sample.ThemedSample
 import io.joyfill.sample.components.PageActionsContainer
 import io.joyfill.sample.components.TemplateItem
-import io.joyfill.sample.utils.randomImageUrl
 import io.joyfill.sample.utils.JSONUtils
+import io.joyfill.sample.utils.randomImageUrl
 import joyfill2.Form
 import kiota.File
 import kiota.FileManager
@@ -122,21 +121,6 @@ private fun getFormulaTemplateItems(): List<TemplateItem> {
             name = "Collection Field - Formula Template",
             description = "Collection field with formula logic and aggregations",
             content = JSONUtils.collectionFieldJSON()
-        ),
-        TemplateItem(
-            name = "Collection Field Advanced - Formula Template",
-            description = "Advanced collection field with complex formula interactions",
-            content = JSONUtils.collectionFieldAdvancedJSON()
-        ),
-        TemplateItem(
-            name = "Collection Field Financial - Formula Template",
-            description = "Financial collection field with monetary calculations and formulas",
-            content = JSONUtils.collectionFieldFinancialJSON()
-        ),
-        TemplateItem(
-            name = "Collection Field Inventory - Formula Template",
-            description = "Inventory collection field with stock calculations and formulas",
-            content = JSONUtils.collectionFieldInventoryJSON()
         ),
         TemplateItem(
             name = "Textarea Field - Formula Template",

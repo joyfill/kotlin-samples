@@ -17,12 +17,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import joyfill.rememberEditor
+import joyfill2.ErrorHandler
+import joyfill2.IdentityGenerator
 import joyfill2.Mode
+import joyfill2.NoOpErrorHandler
 import joyfill2.editors.document.DocumentEditor
+import joyfill2.editors.document.LayoutConfig
+import joyfill2.editors.document.editorOf
+import joyfill2.events.ChangeEvent
 import joyfill2.events.ChangeLog
 import joyfill2.rememberDocumentEditor
 import joyfill2.tools.validation.Valid
 import kiota.FileManager
+import wisdom.ResolutionResourceBuilder
 
 @Composable
 internal fun PageActionsContainer(
@@ -31,7 +39,6 @@ internal fun PageActionsContainer(
     modifier: Modifier = Modifier,
     templates: List<TemplateItem> = emptyList(),
     enableSchemaValidation: Boolean = false,
-    customSchema: String? = null,
     additionalOnChange: (changelog: List<ChangeLog>) -> Unit = {},
     content: @Composable (editor: DocumentEditor, mode: Mode) -> Unit
 ) {
@@ -46,7 +53,6 @@ internal fun PageActionsContainer(
         rememberDocumentEditor(
             json = currentJson,
             validateSchema = enableSchemaValidation,
-            customSchema = customSchema,
             onError = {
                 errorLogs.add(it.err)
             },
@@ -107,4 +113,4 @@ internal fun PageActionsContainer(
             )
         }
     }
-} 
+}

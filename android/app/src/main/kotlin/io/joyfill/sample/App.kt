@@ -3,6 +3,7 @@ package io.joyfill.sample
 import androidx.compose.runtime.Composable
 import io.joyfill.sample.cases.DynamicJSONSample
 import io.joyfill.sample.cases.MasterSample
+import joyfill2.validation.JoyfillSchemaManager
 import kiota.FileManager
 
 @Composable
