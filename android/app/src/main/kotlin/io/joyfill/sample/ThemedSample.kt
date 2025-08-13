@@ -1,9 +1,11 @@
 package io.joyfill.sample
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -20,16 +22,16 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ThemedSample(
-    isDark: Boolean = true,
-    content: @Composable BoxScope.() -> Unit
+    isDark: Boolean = isSystemInDarkTheme(),
+    content: @Composable BoxScope.() -> Unit,
 ) {
     var isLight by rememberSaveable { mutableStateOf(!isDark) }
-    MaterialTheme(colorScheme = if (isLight) lightColorScheme() else darkColorScheme()) {
+    MaterialTheme(
+        colorScheme = if (isLight) lightColorScheme() else darkColorScheme()
+    ) {
         Surface(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.padding(12.dp)) {
-                Box(modifier = Modifier.padding(top = 28.dp)) {
-                    content()
-                }
+            Box(modifier = Modifier.systemBarsPadding().padding(horizontal = 12.dp)) {
+                content()
                 Switch(
                     modifier = Modifier.align(Alignment.TopEnd),
                     checked = isLight,

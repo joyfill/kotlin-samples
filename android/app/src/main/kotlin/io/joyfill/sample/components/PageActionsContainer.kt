@@ -17,20 +17,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import joyfill.rememberEditor
-import joyfill2.ErrorHandler
-import joyfill2.IdentityGenerator
+import io.joyfill.sample.utils.toSafeJsonString
 import joyfill2.Mode
-import joyfill2.NoOpErrorHandler
 import joyfill2.editors.document.DocumentEditor
-import joyfill2.editors.document.LayoutConfig
 import joyfill2.editors.document.editorOf
-import joyfill2.events.ChangeEvent
 import joyfill2.events.ChangeLog
 import joyfill2.rememberDocumentEditor
+import joyfill2.toDocument
 import joyfill2.tools.validation.Valid
 import kiota.FileManager
-import wisdom.ResolutionResourceBuilder
 
 @Composable
 internal fun PageActionsContainer(
@@ -58,7 +53,7 @@ internal fun PageActionsContainer(
             },
             onChange = {
                 it.changelogs.forEach { changelog ->
-                    changeLogs.add(changelog.toJsonString())
+                    changeLogs.add(changelog.toSafeJsonString())
                 }
                 additionalOnChange(it.changelogs)
             },

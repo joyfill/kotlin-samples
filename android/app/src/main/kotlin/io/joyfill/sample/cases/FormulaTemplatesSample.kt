@@ -98,6 +98,11 @@ private fun getFormulaTemplateItems(): List<TemplateItem> {
             content = JSONUtils.dropdownFieldJSON()
         ),
         TemplateItem(
+            name = "FSM Field - Formula Template",
+            description = "Finite state machine field with formula logic and validation",
+            content = JSONUtils.fsmsFieldJSON(),
+        ),
+        TemplateItem(
             name = "Text Field - Formula Template",
             description = "Text field with formula calculations and transformations",
             content = JSONUtils.textFieldJSON()

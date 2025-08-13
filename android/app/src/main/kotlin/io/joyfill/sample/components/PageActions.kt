@@ -28,12 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import joyfill2.Mode
 import io.joyfill.sample.components.logs.LogDialogContent
+import io.joyfill.sample.components.logs.LogType
 import io.joyfill.sample.components.logs.LogsButton
 import io.joyfill.sample.utils.JSONUtils
+import joyfill2.Mode
+import joyfill2.toDocument
 import joyfill2.utils.BUTTON
 import joyfill2.utils.EDIT
 import joyfill2.utils.INVALID
@@ -43,13 +46,10 @@ import joyfill2.utils.VALID
 import kiota.Cancelled
 import kiota.Denied
 import kiota.Failure
+import kiota.File
 import kiota.FileManager
-import kiota.Files
 import kiota.MB
-import kiota.file.PickerLimit
 import kotlinx.coroutines.launch
-import androidx.compose.ui.unit.dp
-import io.joyfill.sample.components.logs.LogType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,8 +79,8 @@ internal fun PageActions(
         templates.ifEmpty {
             listOf(
                 TemplateItem("Empty Date", content = EmptyDateDocument.toJsonString()),
+                TemplateItem("May 2", content = JSONUtils.may2v1JSON()),
                 TemplateItem("Josh Sort and Filter", content = JSONUtils.joshSortAndFilter()),
-                TemplateItem("Hint and Deficiency Demo", content = JSONUtils.hintAndDeficiencyDemo()),
                 TemplateItem("Block JSON", content = JSONUtils.blockJSON()),
                 TemplateItem("Every Field Type Demo", content = JSONUtils.everyFieldTypeDemoJSON()),
                 TemplateItem("Page Conditional Logic", content = JSONUtils.pageConditionalLogicJSON()),
@@ -89,96 +89,95 @@ internal fun PageActions(
                 TemplateItem("Collection Conditional Logic", content = JSONUtils.collectionConditionalLogicJSON()),
                 TemplateItem("All field may12", content = JSONUtils.allFieldMay12()),
                 TemplateItem("Error Handling sample", content = JSONUtils.errorHandlingSample()),
-                TemplateItem("Performance Sort And Filter", content = JSONUtils.performanceSortAndFilter()),
+                TemplateItem("All field visible and hidden", content = JSONUtils.hiddenAndVisibleFieldsJSON()),
+                TemplateItem("3000 Fields", content = JSONUtils.threeThousandFieldsJSON()),
+                TemplateItem("Table Field", content = JSONUtils.table2K()),
+                TemplateItem("Table Collection 1K Rows", content = JSONUtils.tableCollectionPopulated1K()),
+                TemplateItem("-DO NOT USE- Table Collection 10K Rows", content = JSONUtils.tableCollectionPopulated10K()),
             )
         }
     }
 
-    if (enableDocumentSelection) {
-        TemplateDropdown(
-            items = templateItems,
-            selectedItem = selectedTemplate,
-            onItemSelected = { item ->
-                selectedTemplate = item
-                onJsonChange(item.content)
-            },
-            compact = false
-        )
-    }
+    if (enableDocumentSelection) TemplateDropdown(
+        items = templateItems,
+        selectedItem = selectedTemplate,
+        onItemSelected = { item ->
+            selectedTemplate = item
+            onJsonChange(item.content)
+        },
+        compact = false
+    )
 
 
-    if (showJsonDialog) {
-        JsonCollectorDialog(
-            onApply = {
-                if (it.isNotBlank()) {
-                    onJsonChange(it)
-                    showJsonDialog = false
-                } else {
-                    showAlertDialog = true
-                }
-            },
-            onCancel = {
-                showJsonDialog = false
-            },
-            onDismissRequest = {
-                showJsonDialog = false
+    if (showJsonDialog) JsonCollectorDialog(
+        onApply = {
+            val document = try {
+                it.toDocument()
+            } catch (err: Throwable) {
+                null
             }
-        )
-    }
+            if (document != null) {
+                onJsonChange(it)
+                showJsonDialog = false
+            } else {
+                showAlertDialog = true
+            }
+        },
+        onCancel = {
+            showJsonDialog = false
+        },
+        onDismissRequest = {
+            showJsonDialog = false
+        }
+    )
 
-    if (showAlertDialog) {
-        AlertDialog(
-            onDismissRequest = { showAlertDialog = false },
-            confirmButton = {
-                Button(onClick = { showAlertDialog = false }) {
-                    Text("OK")
-                }
-            },
-            title = { Text("Invalid JSON") },
-            text = { Text("The provided JSON is not valid. Please correct it and try again.") }
-        )
-    }
+    if (showAlertDialog) AlertDialog(
+        onDismissRequest = { showAlertDialog = false },
+        confirmButton = {
+            Button(onClick = { showAlertDialog = false }) {
+                Text("OK")
+            }
+        },
+        title = { Text("Invalid JoyDoc") },
+        text = { Text("The provided JSON is not valid JoyDoc. Please correct it and try again.") }
+    )
 
-    if (showLogsDialog) {
-        Dialog(
-            onDismissRequest = {
+    if (showLogsDialog) Dialog(
+        onDismissRequest = {
+            showLogsDialog = false
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        LogDialogContent(
+            modifier = Modifier.fillMaxSize(0.95f),
+            logs = changeLogs,
+            clearLogs = clearLogs,
+            logType = LogType.CHANGE_LOG,
+            collapse = {
                 showLogsDialog = false
             },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
-        ) {
-            LogDialogContent(
-                modifier = Modifier.fillMaxSize(0.95f),
-                logs = changeLogs,
-                clearLogs = clearLogs,
-                logType = LogType.CHANGE_LOG,
-                collapse = {
-                    showLogsDialog = false
-                },
-            )
-        }
+        )
     }
 
-    if (showErrorDialog) {
-        Dialog(
-            onDismissRequest = {
+    if (showErrorDialog) Dialog(
+        onDismissRequest = {
+            showErrorDialog = false
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        LogDialogContent(
+            modifier = Modifier.fillMaxSize(0.95f),
+            logs = errorLogs,
+            clearLogs = clearErrorLogs,
+            logType = LogType.ERROR_LOG,
+            collapse = {
                 showErrorDialog = false
             },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
-        ) {
-            LogDialogContent(
-                modifier = Modifier.fillMaxSize(0.95f),
-                logs = errorLogs,
-                clearLogs = clearErrorLogs,
-                logType = LogType.ERROR_LOG,
-                collapse = {
-                    showErrorDialog = false
-                },
-            )
-        }
+        )
     }
 
     Row(
@@ -193,7 +192,7 @@ internal fun PageActions(
             )
             Switch(
                 checked = mode == Mode.fill,
-                onCheckedChange = { isChecked -> 
+                onCheckedChange = { isChecked ->
                     val newMode = if (isChecked) Mode.fill else Mode.readonly
                     onModeChange(newMode)
                 }
@@ -236,17 +235,27 @@ internal fun PageActions(
                     .size(20.dp)
                     .testTag("$UPLOAD-$BUTTON")
                     .clickable {
+                        val files = fileManager ?: return@clickable
+                        val picker = files.picker(limit = 100.MB)
                         coroutineScope.launch {
-                            when (val result =
-                                fileManager?.picker(limit = PickerLimit(size = 100.MB, count = 1))
-                                    ?.open()) {
-                                Cancelled -> {}
-                                Denied -> println("Permission denied")
+                            when (val result = picker.open()) {
+                                is Cancelled -> {}
+                                is Denied -> println("Permission denied")
                                 is Failure<*> -> print(result)
-                                is Files -> {
-                                    onJsonChange(fileManager.readText(result.first()))
+                                is File -> {
+                                    val json = files.readText(result)
+                                    val document = try {
+                                        json.toDocument()
+                                    } catch (err: Throwable) {
+                                        null
+                                    }
+                                    if (document != null) {
+                                        onJsonChange(json)
+                                        showJsonDialog = false
+                                    } else {
+                                        showAlertDialog = true
+                                    }
                                 }
-                                null -> println("Null body")
                             }
                         }
                     }

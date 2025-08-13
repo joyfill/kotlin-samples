@@ -1,10 +1,19 @@
 package io.joyfill.sample
 
 import androidx.compose.runtime.Composable
-import io.joyfill.sample.cases.DynamicJSONSample
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import io.joyfill.sample.cases.MasterSample
-import joyfill2.validation.JoyfillSchemaManager
+import joyfill.Page
+import joyfill2.Document
+import joyfill2.Form
+import joyfill2.buildDocument
+import joyfill2.rememberDocumentEditor
+import joyfill2.toDocument
 import kiota.FileManager
+import kotlinx.coroutines.delay
+import kotlinx.serialization.json.buildJsonObject
+import kotlin.time.Duration.Companion.microseconds
 
 @Composable
 fun App(files: FileManager) {

@@ -22,21 +22,17 @@ internal fun DialogContent(
     modifier: Modifier = Modifier,
     logs: List<String>,
 ) {
-    val clipboardManager = LocalClipboardManager.current
     val localColor = LocalContentColor.current
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier
+        modifier = modifier.padding(horizontal = 10.dp)
     ) {
         itemsIndexed(logs) { index, changeLog ->
             LogItem(
                 index = index + 1,
                 log = changeLog,
                 modifier = Modifier
-                    .clickable {
-                        clipboardManager.setText(AnnotatedString(changeLog))
-                    }
                     .fillMaxWidth()
                     .border(
                         width = 2.dp,
