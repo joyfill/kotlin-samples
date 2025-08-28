@@ -41,10 +41,15 @@ internal fun DocumentEditor.replace(
 ) = replace(fieldId, mapOf(oldUrl to newUrl))
 
 
+private val cached by lazy { mutableMapOf<String, String>() }
+
 @OptIn(ExperimentalEncodingApi::class)
 internal suspend fun FileManager.toBase64Url(file: File): String {
     val info = info(file)
-    return "data:${info.mime().text};base64,${Base64.encode(readBytes(file))}"
+    val key = "${info.name()}-${info.size()}"
+    return cached.getOrPut(key) {
+        "data:${info.mime().text};base64,${Base64.encode(readBytes(file))}"
+    }
 }
 
 @Composable

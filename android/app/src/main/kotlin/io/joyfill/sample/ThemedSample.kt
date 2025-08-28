@@ -8,15 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -25,19 +19,12 @@ fun ThemedSample(
     isDark: Boolean = isSystemInDarkTheme(),
     content: @Composable BoxScope.() -> Unit,
 ) {
-    var isLight by rememberSaveable { mutableStateOf(!isDark) }
-    MaterialTheme(
-        colorScheme = if (isLight) lightColorScheme() else darkColorScheme()
-    ) {
+    MaterialTheme(colorScheme = if (isDark) darkColorScheme() else lightColorScheme()) {
         Surface(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.systemBarsPadding().padding(horizontal = 12.dp)) {
-                content()
-                Switch(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    checked = isLight,
-                    onCheckedChange = { isLight = !isLight }
-                )
-            }
+            Box(
+                content = content,
+                modifier = Modifier.systemBarsPadding().padding(horizontal = 12.dp)
+            )
         }
     }
 }

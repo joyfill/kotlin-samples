@@ -3,6 +3,7 @@ package io.joyfill.sample
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import io.joyfill.sample.cases.CollectionConditionalLogic
 import io.joyfill.sample.cases.MasterSample
 import joyfill.Page
 import joyfill2.Document

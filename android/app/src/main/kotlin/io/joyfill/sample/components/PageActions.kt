@@ -1,23 +1,35 @@
 package io.joyfill.sample.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material.icons.outlined.Error
+import androidx.compose.material.icons.outlined.RemoveModerator
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +38,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -33,7 +46,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.joyfill.sample.components.logs.LogDialogContent
 import io.joyfill.sample.components.logs.LogType
-import io.joyfill.sample.components.logs.LogsButton
 import io.joyfill.sample.utils.JSONUtils
 import joyfill2.Mode
 import joyfill2.toDocument
@@ -66,6 +78,7 @@ internal fun PageActions(
     onSchemaValidationSwitch: (Boolean) -> Unit = {},
     enableDocumentSelection: Boolean = true,
     onJsonChange: (String) -> Unit = {},
+    shareJson: () -> Unit = {},
     onModeChange: (Mode) -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -80,34 +93,217 @@ internal fun PageActions(
             listOf(
                 TemplateItem("Empty Date", content = EmptyDateDocument.toJsonString()),
                 TemplateItem("May 2", content = JSONUtils.may2v1JSON()),
+                TemplateItem("ST Performance", content = JSONUtils.performanceST()),
                 TemplateItem("Josh Sort and Filter", content = JSONUtils.joshSortAndFilter()),
+                TemplateItem("Conditional Collection", content = JSONUtils.conditionalCollection()),
                 TemplateItem("Block JSON", content = JSONUtils.blockJSON()),
                 TemplateItem("Every Field Type Demo", content = JSONUtils.everyFieldTypeDemoJSON()),
-                TemplateItem("Page Conditional Logic", content = JSONUtils.pageConditionalLogicJSON()),
-                TemplateItem("Field Conditional Logic", content = JSONUtils.allFieldConditionalLogicJSON()),
-                TemplateItem("Collection Validation", content = JSONUtils.collectionValidationJSON()),
-                TemplateItem("Collection Conditional Logic", content = JSONUtils.collectionConditionalLogicJSON()),
+                TemplateItem(
+                    "Page Conditional Logic",
+                    content = JSONUtils.pageConditionalLogicJSON()
+                ),
+                TemplateItem(
+                    "Field Conditional Logic",
+                    content = JSONUtils.allFieldConditionalLogicJSON()
+                ),
+                TemplateItem(
+                    "Collection Validation",
+                    content = JSONUtils.collectionValidationJSON()
+                ),
+                TemplateItem(
+                    "Collection Conditional Logic",
+                    content = JSONUtils.collectionConditionalLogicJSON()
+                ),
                 TemplateItem("All field may12", content = JSONUtils.allFieldMay12()),
                 TemplateItem("Error Handling sample", content = JSONUtils.errorHandlingSample()),
-                TemplateItem("All field visible and hidden", content = JSONUtils.hiddenAndVisibleFieldsJSON()),
+                TemplateItem(
+                    "All field visible and hidden",
+                    content = JSONUtils.hiddenAndVisibleFieldsJSON()
+                ),
                 TemplateItem("3000 Fields", content = JSONUtils.threeThousandFieldsJSON()),
                 TemplateItem("Table Field", content = JSONUtils.table2K()),
-                TemplateItem("Table Collection 1K Rows", content = JSONUtils.tableCollectionPopulated1K()),
-                TemplateItem("-DO NOT USE- Table Collection 10K Rows", content = JSONUtils.tableCollectionPopulated10K()),
+                TemplateItem(
+                    "Table Collection 1K Rows",
+                    content = JSONUtils.tableCollectionPopulated1K()
+                ),
+                TemplateItem(
+                    "-DO NOT USE- Table Collection 10K Rows",
+                    content = JSONUtils.tableCollectionPopulated10K()
+                ),
+            )
+        }
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        if (enableDocumentSelection) TemplateDropdown(
+            items = templateItems,
+            selectedItem = selectedTemplate,
+            onItemSelected = { item ->
+                selectedTemplate = item
+                onJsonChange(item.content)
+            },
+            compact = false,
+            modifier = Modifier.weight(1F),
+        )
+
+        IconButton(onClick = shareJson) {
+            Icon(
+                imageVector = Icons.Default.Share,
+                contentDescription = "Share Json",
             )
         }
     }
 
-    if (enableDocumentSelection) TemplateDropdown(
-        items = templateItems,
-        selectedItem = selectedTemplate,
-        onItemSelected = { item ->
-            selectedTemplate = item
-            onJsonChange(item.content)
-        },
-        compact = false
-    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier
+                .testTag("MODE-$BUTTON")
+                .weight(1f)
+        ) {
+            SegmentedButton(
+                selected = mode == Mode.fill,
+                onClick = { onModeChange(Mode.fill) },
+                shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                label = { Text("Fill") },
+                modifier = Modifier.testTag("FILL-$BUTTON")
+            )
+            SegmentedButton(
+                selected = mode == Mode.readonly,
+                onClick = { onModeChange(Mode.readonly) },
+                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                label = { Text("Read-Only") },
+                modifier = Modifier.testTag("READONLY-$BUTTON"),
+            )
+        }
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            TextButton(
+                onClick = { showLogsDialog = true },
+                modifier = Modifier.testTag("$LOG-$BUTTON"),
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.List,
+                    contentDescription = "Changelogs",
+                )
+                Spacer(Modifier.width(2.dp))
+                Text(text = changeLogs.size.toString())
+            }
+
+            TextButton(
+                onClick = { showErrorDialog = true },
+                modifier = Modifier.testTag("ERROR-$LOG-$BUTTON"),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Error,
+                    contentDescription = "Error logs",
+                )
+                Spacer(Modifier.width(2.dp))
+                Text(text = errorLogs.size.toString())
+            }
+        }
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        FilledIconToggleButton(
+            checked = enableSchemaValidation,
+            onCheckedChange = { onSchemaValidationSwitch(it) },
+            modifier = Modifier.testTag("SCHEMA-$BUTTON"),
+            colors = IconButtonDefaults.filledIconToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                checkedContainerColor = MaterialTheme.colorScheme.primary,
+                checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+            )
+        ) {
+            if (enableSchemaValidation) {
+                Icon(
+                    imageVector = Icons.Default.Shield,
+                    contentDescription = "Validated",
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Outlined.RemoveModerator,
+                    contentDescription = "Not validated",
+                )
+            }
+        }
+
+        IconButton(
+            onClick = { showJsonDialog = true },
+            modifier = Modifier.testTag("$EDIT-$BUTTON")
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = "Edit JSON",
+            )
+        }
+
+        IconButton(
+            onClick = {
+                val files = fileManager ?: return@IconButton
+                val picker = files.picker(limit = 100.MB)
+                coroutineScope.launch {
+                    when (val result = picker.open()) {
+                        is Cancelled -> {}
+                        is Denied -> println("Permission denied")
+                        is Failure<*> -> print(result)
+                        is File -> {
+                            val json = files.readText(result)
+                            val document = try {
+                                json.toDocument()
+                            } catch (_: Throwable) {
+                                null
+                            }
+                            if (document != null) {
+                                onJsonChange(json)
+                                showJsonDialog = false
+                            } else {
+                                showAlertDialog = true
+                            }
+                        }
+                    }
+                }
+            },
+            modifier = Modifier.testTag("$UPLOAD-$BUTTON")
+        ) {
+            Icon(
+                imageVector = Icons.Default.Upload,
+                contentDescription = "Upload JSON file",
+            )
+        }
+
+        if (isValid) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = "Valid",
+                tint = Color.Green,
+                modifier = Modifier
+                    .size(20.dp)
+                    .testTag("$VALID-$BUTTON")
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "invalid",
+                tint = Color.Red,
+                modifier = Modifier
+                    .size(20.dp)
+                    .testTag("$INVALID-$BUTTON")
+            )
+        }
+    }
 
     if (showJsonDialog) JsonCollectorDialog(
         onApply = {
@@ -138,6 +334,7 @@ internal fun PageActions(
                 Text("OK")
             }
         },
+        shape = MaterialTheme.shapes.large,
         title = { Text("Invalid JoyDoc") },
         text = { Text("The provided JSON is not valid JoyDoc. Please correct it and try again.") }
     )
@@ -148,16 +345,18 @@ internal fun PageActions(
         },
         properties = DialogProperties(
             usePlatformDefaultWidth = false
-        )
+        ),
     ) {
         LogDialogContent(
-            modifier = Modifier.fillMaxSize(0.95f),
             logs = changeLogs,
             clearLogs = clearLogs,
             logType = LogType.CHANGE_LOG,
             collapse = {
                 showLogsDialog = false
             },
+            modifier = Modifier
+                .fillMaxSize(0.95f)
+                .clip(MaterialTheme.shapes.large)
         )
     }
 
@@ -170,132 +369,15 @@ internal fun PageActions(
         )
     ) {
         LogDialogContent(
-            modifier = Modifier.fillMaxSize(0.95f),
             logs = errorLogs,
             clearLogs = clearErrorLogs,
             logType = LogType.ERROR_LOG,
             collapse = {
                 showErrorDialog = false
             },
+            modifier = Modifier
+                .fillMaxSize(0.95f)
+                .clip(MaterialTheme.shapes.large)
         )
     }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                "Fill Mode:",
-                style = MaterialTheme.typography.bodySmall
-            )
-            Switch(
-                checked = mode == Mode.fill,
-                onCheckedChange = { isChecked ->
-                    val newMode = if (isChecked) Mode.fill else Mode.readonly
-                    onModeChange(newMode)
-                }
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            LogsButton(
-                logCount = changeLogs.size,
-                logType = LogType.CHANGE_LOG,
-                expand = { showLogsDialog = true },
-                modifier = Modifier.testTag("$LOG-$BUTTON"),
-                compact = true
-            )
-
-            LogsButton(
-                logCount = errorLogs.size,
-                logType = LogType.ERROR_LOG,
-                expand = { showErrorDialog = true },
-                modifier = Modifier.testTag("ERROR-$LOG-$BUTTON"),
-                compact = true
-            )
-
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "Edit JSON",
-                modifier = Modifier
-                    .size(20.dp)
-                    .testTag("$EDIT-$BUTTON")
-                    .clickable { showJsonDialog = true }
-            )
-
-            Icon(
-                imageVector = Icons.Default.Upload,
-                contentDescription = "Upload JSON file",
-                modifier = Modifier
-                    .size(20.dp)
-                    .testTag("$UPLOAD-$BUTTON")
-                    .clickable {
-                        val files = fileManager ?: return@clickable
-                        val picker = files.picker(limit = 100.MB)
-                        coroutineScope.launch {
-                            when (val result = picker.open()) {
-                                is Cancelled -> {}
-                                is Denied -> println("Permission denied")
-                                is Failure<*> -> print(result)
-                                is File -> {
-                                    val json = files.readText(result)
-                                    val document = try {
-                                        json.toDocument()
-                                    } catch (err: Throwable) {
-                                        null
-                                    }
-                                    if (document != null) {
-                                        onJsonChange(json)
-                                        showJsonDialog = false
-                                    } else {
-                                        showAlertDialog = true
-                                    }
-                                }
-                            }
-                        }
-                    }
-            )
-
-            if (isValid) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Valid",
-                    tint = Color.Green,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .testTag("$VALID-$BUTTON")
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "inValid",
-                    tint = Color.Red,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .testTag("$INVALID-$BUTTON")
-                )
-            }
-        }
-    }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            "Enable Schema Validation",
-            style = MaterialTheme.typography.bodySmall
-        )
-        Switch(
-            checked = enableSchemaValidation,
-            onCheckedChange = { onSchemaValidationSwitch(it) }
-        )
-    }
-
 }

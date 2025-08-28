@@ -22,6 +22,7 @@ import kiota.file.mime.Image
 internal fun FormulaTemplatesSample(files: FileManager) {
     val templates = remember { getFormulaTemplateItems() }
 
+    val uploader = remember(files) { Uploader(files) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,13 +42,7 @@ internal fun FormulaTemplatesSample(files: FileManager) {
                     navigation = null,
                     modifier = Modifier.fillMaxWidth(),
                     mode = mode,
-                    onUpload = {
-                        when (val result =
-                            files.picker(listOf(Image.PNG, Image.JPEG, Image.JPG)).open()) {
-                            is File -> listOf(files.toBase64Url(result))
-                            else -> listOf(randomImageUrl())
-                        }
-                    },
+                    onUpload = uploader::handler,
                     onCapture = { "capture_${System.currentTimeMillis()}" },
                 )
             },

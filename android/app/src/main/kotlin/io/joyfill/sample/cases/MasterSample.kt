@@ -1,8 +1,10 @@
 package io.joyfill.sample.cases
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,16 +13,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,62 +36,65 @@ import io.joyfill.sample.ThemedSample
 import kiota.FileManager
 
 @Composable
-internal fun MasterSample(files: FileManager) = ThemedSample {
-    Column {
-        var currentSample by remember { mutableStateOf<SampleType?>(null) }
+internal fun MasterSample(files: FileManager) {
+    val isSystemDark = isSystemInDarkTheme()
+    var isDark by rememberSaveable { mutableStateOf(isSystemDark) }
+    ThemedSample(isDark = isDark) {
+        Column {
+            var currentSample by remember { mutableStateOf<SampleType?>(null) }
 
-        if (currentSample != null) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { currentSample = null }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                if (currentSample != null) {
+                    IconButton(onClick = { currentSample = null }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                    Text(
+                        text = currentSample?.title.orEmpty(),
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                    )
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = isDark,
+                        onCheckedChange = { isDark = it },
+                        thumbContent = {
+                            Icon(
+                                modifier = Modifier.padding(4.dp),
+                                imageVector = if (isDark) Icons.Default.DarkMode else Icons.Outlined.LightMode,
+                                contentDescription = if (isDark) "Dark Mode" else "Light Mode"
+                            )
+                        }
+                    )
                 }
-                Text(
-                    text = currentSample?.title.orEmpty(),
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                Spacer(modifier = Modifier.weight(1f))
             }
-        }
 
-        when (currentSample) {
-            SampleType.DYNAMIC_SAMPLE -> DynamicJSONSample(files)
-            SampleType.FORMULA_TEMPLATES -> FormulaTemplatesSample(files)
-            SampleType.SCHEMA_VALIDATION -> SchemaValidationSample(files)
-            SampleType.CHANGE_HANDLER_2_DOCUMENT -> ChangeHandlerSample(files)
-            SampleType.CHANGE_HANDLER_SERVICE_TRADE -> ServiceTradeExSample(files)
-            null -> SampleGrid { sampleType -> currentSample = sampleType }
+            when (currentSample) {
+                SampleType.DYNAMIC_SAMPLE -> DynamicJSONSample(files)
+                SampleType.FORMULA_TEMPLATES -> FormulaTemplatesSample(files)
+                SampleType.CHANGE_HANDLER_2_DOCUMENT -> ChangeHandlerSample(files)
+                SampleType.CHANGE_HANDLER_SERVICE_TRADE -> HintHandlerSample(files)
+                null -> SampleGrid { sampleType -> currentSample = sampleType }
+            }
         }
     }
 }
 
 @Composable
 private fun SampleGrid(onSampleSelected: (SampleType) -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Joyfill Sample Gallery",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(SampleType.entries) { sampleType ->
-                SampleCard(
-                    title = sampleType.title,
-                    description = sampleType.description,
-                    onClick = { onSampleSelected(sampleType) }
-                )
-            }
+        items(SampleType.entries) { sampleType ->
+            SampleCard(
+                title = sampleType.title,
+                description = sampleType.description,
+                onClick = { onSampleSelected(sampleType) }
+            )
         }
     }
 }
@@ -119,10 +128,6 @@ private enum class SampleType(val title: String, val description: String) {
     DYNAMIC_SAMPLE(
         "DYNAMIC Sample",
         "Convert JSON to interactive forms with optional schema validation."
-    ),
-    SCHEMA_VALIDATION(
-        "Schema Validation",
-        "Validate JSON against a schema with real-time feedback."
     ),
     CHANGE_HANDLER_2_DOCUMENT(
         "Change Handler (2-Document)",

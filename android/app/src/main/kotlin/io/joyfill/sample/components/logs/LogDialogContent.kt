@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 internal enum class LogType( val title: String) {
-    CHANGE_LOG("ChangeLogs"),
-    ERROR_LOG("ErrorLogs"),
+    CHANGE_LOG("Changelogs"),
+    ERROR_LOG("Errors"),
 }
 
 @Composable

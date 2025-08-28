@@ -13,30 +13,31 @@ import joyfill2.rememberDocumentEditor
 internal fun CollectionConditionalLogic() {
 
     val document = buildDocument {
-        collection("Collection ConditionalLogicTest", id = "collection") {
+        collection("Employees", id = "employeesCollection") {
             table(
-                title = "Main table",
-                id = "mainTable",
+                title = "Departments",
+                id = "departmentsTable",
                 root = true,
-                children = listOf("Show when text is empty", "Show when text is filled")
+                required = true,
+                children = listOf("paymentsTable")
             ) {
-                text("text", id = "textColumn")
+                text("Department Name", id = "departmentNameText", required = true)
             }
-            table("Show when text is empty", id = "emptyTable", hidden = true, logic = {
-                showWhenAll { cell(table = "mainTable", column = "textColumn").isEmpty() }
-            }) {
-                text(id = "numberColumn")
-                text(id = "signatureColumn")
-            }
-            table("Show when text is filled", id = "fillTable", hidden = true, logic = {
-                showWhenAll { cell(table = "mainTable", column = "textColumn").isFilled() }
-            }) {
-                text("textAreaColumn")
+            table(
+                title = "Payments",
+                id = "paymentsTable",
+                hidden = true,
+                logic = {
+                    showWhenAll { cell(table = "departmentsTable", column = "departmentNameText").isFilled() }
+                }
+            ) {
+                text("Name", id = "paymentsNameText", required = true)
+                number("Age", id = "paymentsAgeNumber")
             }
         }
     }
 
-    val editor = rememberDocumentEditor(document)
+    val editor = rememberDocumentEditor(document, false)
 
     Form(
         editor = editor,
