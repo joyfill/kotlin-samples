@@ -1,8 +1,8 @@
 package io.joyfill.sample.utils
 
-import joyfill2.events.ChangeLog
-import joyfill2.events.FieldUpdateChange
-import joyfill2.utils.toJsonObject
+import joyfill.events.ChangeLog
+import joyfill.events.FieldUpdateChange
+import joyfill.utils.toJsonObject
 import kotlinx.serialization.json.Json
 
 /**

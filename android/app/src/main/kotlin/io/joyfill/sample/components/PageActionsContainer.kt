@@ -2,11 +2,8 @@ package io.joyfill.sample.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,14 +18,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import io.joyfill.sample.components.logs.LogCollectorBus
 import io.joyfill.sample.utils.toSafeJsonString
-import joyfill2.Mode
-import joyfill2.editors.document.DocumentEditor
-import joyfill2.events.ChangeLog
-import joyfill2.rememberDocumentEditor
-import joyfill2.tools.validation.Valid
+import joyfill.Mode
+import joyfill.editors.document.DocumentEditor
+import joyfill.events.ChangeLog
+import joyfill.rememberDocumentEditor
+import joyfill.tools.validation.Valid
 import kiota.Failure
 import kiota.File
 import kiota.FileManager
@@ -43,11 +41,14 @@ internal fun PageActionsContainer(
     templates: List<TemplateItem> = emptyList(),
     enableSchemaValidation: Boolean = false,
     additionalOnChange: (changelog: List<ChangeLog>) -> Unit = {},
-    content: @Composable (editor: DocumentEditor, mode: Mode) -> Unit,
+    initialLicense: String? = null,
+    platform: io.joyfill.sample.Platform,
+    content: @Composable (editor: DocumentEditor, mode: Mode, license: String?) -> Unit,
 ) {
     var mode by remember { mutableStateOf(Mode.fill) }
     var enableSchemaValidation by remember { mutableStateOf(enableSchemaValidation) }
     var currentJson by remember { mutableStateOf(initialJson) }
+    var currentLicense by remember { mutableStateOf(initialLicense) }
     val changeLogs = remember { mutableStateListOf<String>() }
     val errorLogs = remember { mutableStateListOf<String>() }
     var isValid by remember { mutableStateOf(false) }
@@ -109,25 +110,25 @@ internal fun PageActionsContainer(
                     }
                 }
             },
+            copyJson = {
+                if (editor == null) return@PageActions
+                clipboardManager.setText(AnnotatedString(editor.toJsonString()))
+            },
             enableSchemaValidation = enableSchemaValidation,
             onSchemaValidationSwitch = { enableSchemaValidation = it },
             onModeChange = { mode = it },
+            license = currentLicense,
+            onLicenseChange = { currentLicense = it },
+            platform = platform,
         )
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            HorizontalDivider(modifier = Modifier.weight(1F))
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = "BUILD: 2708 (02)",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
         if (editor != null) {
-            content(editor, mode)
+            LogCollectorBus.add = { msg: String -> changeLogs.add(msg) }
+            content(editor, mode, currentLicense)
         } else {
+            LogCollectorBus.add = {}
             Text(
                 text = "Select a JSON template from above or upload a JSON file to see the form with schema validation",
                 style = MaterialTheme.typography.bodyLarge,

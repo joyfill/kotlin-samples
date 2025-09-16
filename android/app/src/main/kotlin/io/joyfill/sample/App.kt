@@ -1,23 +1,11 @@
 package io.joyfill.sample
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import io.joyfill.sample.cases.CollectionConditionalLogic
-import io.joyfill.sample.cases.MasterSample
-import joyfill.Page
-import joyfill2.Document
-import joyfill2.Form
-import joyfill2.buildDocument
-import joyfill2.rememberDocumentEditor
-import joyfill2.toDocument
+import io.joyfill.sample.samples.MasterSample
 import kiota.FileManager
-import kotlinx.coroutines.delay
-import kotlinx.serialization.json.buildJsonObject
-import kotlin.time.Duration.Companion.microseconds
 
 @Composable
-fun App(files: FileManager) {
+fun App(files: FileManager, platform: Platform) {
 //    ComprehensiveSample()
 //    ImageSample(files)
 //    SignatureSample()
@@ -43,7 +31,7 @@ fun App(files: FileManager) {
 //    ChangeHandlerSample(files)
 //    HintHandlerSample(files)
 //    DynamicJSONSample(files)
-      MasterSample(files)
+    MasterSample(files, platform)
 //    CollectionBulkInputPerf(files)
 //    FormulaSample()
 }

@@ -1,4 +1,4 @@
-package joyfill.shared.theme
+package io.joyfill.sample.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

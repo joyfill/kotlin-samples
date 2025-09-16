@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application") version "8.9.1"
-    kotlin("android") version "2.1.21"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.1.21"
+    kotlin("android") version "2.2.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0"
 }
 
 repositories {
@@ -53,8 +53,8 @@ kotlin {
     }
 }
 
-fun joyfill(module: String) = "io.joyfill:$module:2.0.0-Beta20"
-fun asoft(module: String) = "tz.co.asoft:$module:3.1.14"
+fun joyfill(module: String) = "io.joyfill:$module:2.0.0-Beta21"
+fun asoft(module: String) = "tz.co.asoft:$module:3.2.2"
 
 dependencies {
     implementation(joyfill("compose"))?.because("We need to use joyfill form composables")

@@ -11,10 +11,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.RemoveModerator
 import androidx.compose.material3.AlertDialog
@@ -44,17 +46,19 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import io.joyfill.sample.Platform
 import io.joyfill.sample.components.logs.LogDialogContent
 import io.joyfill.sample.components.logs.LogType
 import io.joyfill.sample.utils.JSONUtils
-import joyfill2.Mode
-import joyfill2.toDocument
-import joyfill2.utils.BUTTON
-import joyfill2.utils.EDIT
-import joyfill2.utils.INVALID
-import joyfill2.utils.LOG
-import joyfill2.utils.UPLOAD
-import joyfill2.utils.VALID
+import joyfill.Mode
+import joyfill.toDocument
+import joyfill.utils.BUTTON
+import joyfill.utils.COUNT
+import joyfill.utils.EDIT
+import joyfill.utils.INVALID
+import joyfill.utils.LOG
+import joyfill.utils.UPLOAD
+import joyfill.utils.VALID
 import kiota.Cancelled
 import kiota.Denied
 import kiota.Failure
@@ -79,13 +83,18 @@ internal fun PageActions(
     enableDocumentSelection: Boolean = true,
     onJsonChange: (String) -> Unit = {},
     shareJson: () -> Unit = {},
+    copyJson: () -> Unit = {},
     onModeChange: (Mode) -> Unit = {},
+    license: String? = null,
+    onLicenseChange: (String?) -> Unit = {},
+    platform: Platform = Platform.Android,
 ) {
     val coroutineScope = rememberCoroutineScope()
     var showJsonDialog by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
     var showLogsDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
+    var showLicenseDialog by remember { mutableStateOf(false) }
     var selectedTemplate by remember { mutableStateOf<TemplateItem?>(null) }
 
     val templateItems = remember(templates) {
@@ -154,6 +163,15 @@ internal fun PageActions(
                 contentDescription = "Share Json",
             )
         }
+        if (platform == Platform.Desktop) {
+            Spacer(Modifier.width(4.dp))
+            IconButton(onClick = copyJson) {
+                Icon(
+                    imageVector = Icons.Default.ContentCopy,
+                    contentDescription = "Copy Json",
+                )
+            }
+        }
     }
 
     Row(
@@ -184,7 +202,7 @@ internal fun PageActions(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-        ){
+        ) {
             TextButton(
                 onClick = { showLogsDialog = true },
                 modifier = Modifier.testTag("$LOG-$BUTTON"),
@@ -194,7 +212,10 @@ internal fun PageActions(
                     contentDescription = "Changelogs",
                 )
                 Spacer(Modifier.width(2.dp))
-                Text(text = changeLogs.size.toString())
+                Text(
+                    text = changeLogs.size.toString(),
+                    modifier = Modifier.testTag("$LOG-$COUNT")
+                )
             }
 
             TextButton(
@@ -281,6 +302,17 @@ internal fun PageActions(
             Icon(
                 imageVector = Icons.Default.Upload,
                 contentDescription = "Upload JSON file",
+            )
+        }
+
+        IconButton(
+            onClick = { showLicenseDialog = true },
+            modifier = Modifier.testTag("LICENSE-$BUTTON")
+        ) {
+            Icon(
+                imageVector = Icons.Default.VpnKey,
+                contentDescription = "License Settings",
+                tint = if (license.isNullOrBlank()) Color.Gray else MaterialTheme.colorScheme.primary
             )
         }
 
@@ -380,4 +412,10 @@ internal fun PageActions(
                 .clip(MaterialTheme.shapes.large)
         )
     }
+
+    if (showLicenseDialog) LicenseInputDialog(
+        currentLicense = license ?: "",
+        onLicenseChange = onLicenseChange,
+        onDismiss = { showLicenseDialog = false }
+    )
 }

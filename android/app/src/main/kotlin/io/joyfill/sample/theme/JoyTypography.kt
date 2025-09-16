@@ -1,4 +1,4 @@
-package joyfill.shared.theme
+package io.joyfill.sample.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
