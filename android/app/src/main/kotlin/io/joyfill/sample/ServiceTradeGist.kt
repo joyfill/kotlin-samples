@@ -22,7 +22,7 @@ fun ComponentEditor.textValue() = when (this) {
 
 fun processOnChangeEvent(event: ComponentEvent.CellEvent<ComponentEditor>, editor: DocumentEditor) {
     val fieldID = event.fieldId
-    val rowId = event.rowId
+    val rowId = event.rowIds?.firstOrNull()
     // https://github.com/joyfill/kotlin-samples/blob/42a5e1d0b6c4fdef77e0bef3a206f967848e17b9/android/app/src/main/kotlin/io/joyfill/sample/cases/HintHandlerSample.kt#L12
 
     val editedField = editor.fields.find(fieldID)?.component as? TableField ?: return

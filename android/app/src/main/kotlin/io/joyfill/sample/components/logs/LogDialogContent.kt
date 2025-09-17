@@ -66,6 +66,7 @@ internal fun LogDialogContent(
 
             DialogContent(
                 modifier = Modifier.fillMaxSize(),
+                logType = logType,
                 logs = logs
             )
         }

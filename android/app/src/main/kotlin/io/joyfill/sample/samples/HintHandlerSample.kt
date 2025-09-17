@@ -29,7 +29,7 @@ internal fun HintHandlerSample(files: FileManager) {
 
                 // Alarms table, field to be updated
                 val table = editor.fields.table("Alarm Devices")!!
-                val row = table.rows.find(event.rowId.orEmpty())!!
+                val row = table.rows.find(event.rowIds?.firstOrNull().orEmpty())!!
 
                 // Columns to be updated
                 val visualHintColumn = table.columns.block("Visual Inspection Hint")!!
@@ -55,7 +55,7 @@ internal fun HintHandlerSample(files: FileManager) {
                     // Table to update
                     fieldId = table.id,
                     // Row Id to update
-                    rowId = event.rowId,
+                    rowId = event.rowIds?.firstOrNull(),
                     // Columns to update with data from hint row
                     cellUpdates = mapOf(
                         visualHintColumn to visualInspectionHint,

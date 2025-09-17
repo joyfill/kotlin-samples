@@ -35,6 +35,7 @@ import kotlinx.coroutines.withContext
 @Composable
 internal fun LogItem(
     index: Int,
+    logType: LogType,
     log: String,
     modifier: Modifier = Modifier,
 ) {
@@ -45,7 +46,7 @@ internal fun LogItem(
     val isLongText = remember(log) { LogTextProcessor.isLongText(log) }
 
     val (formattedText, formattedPreview) = remember(log) {
-        val formatted = LogTextProcessor.formatJsonText(log)
+        val formatted = LogTextProcessor.formatJsonText(log, logType)
         val preview = LogTextProcessor.createPreview(formatted)
         formatted to preview
     }

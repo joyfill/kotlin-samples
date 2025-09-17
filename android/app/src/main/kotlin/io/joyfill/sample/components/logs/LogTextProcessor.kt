@@ -16,10 +16,23 @@ internal object LogTextProcessor {
         prettyPrintIndent = "    "
     }
 
-    internal fun formatJsonText(text: String): String {
+    internal fun formatJsonText(
+        text: String,
+        logType: LogType,
+    ): String {
         return try {
             val jsonElement = Json.parseToJsonElement(text)
-            jsonFormatter.encodeToString(JsonElement.serializer(), jsonElement)
+            val formattedJson = jsonFormatter.encodeToString(JsonElement.serializer(), jsonElement)
+            val lines = formattedJson.lines()
+            val firstLine = lines.firstOrNull() ?: ""
+            val remainingLines = lines.drop(1)
+
+            val prefix = when (logType) {
+                LogType.CHANGE_LOG -> "onChange"
+                LogType.ERROR_LOG -> "onError"
+            }
+
+            "$prefix: $firstLine\n${remainingLines.joinToString("\n")}"
         } catch (e: Exception) {
             text
         }
