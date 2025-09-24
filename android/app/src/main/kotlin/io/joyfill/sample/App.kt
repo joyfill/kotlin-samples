@@ -1,14 +1,14 @@
 package io.joyfill.sample
 
 import androidx.compose.runtime.Composable
-import io.joyfill.sample.samples.ImageSample
+import io.joyfill.sample.samples.ApiSample
 import io.joyfill.sample.samples.MasterSample
 import kiota.FileManager
 
 @Composable
 fun App(files: FileManager, platform: Platform) {
-//    ComprehensiveSample()
-    ImageSample(files)
+//      ApiSample()
+//    ImageSample(files)
 //    SignatureSample()
 //    TableSample()
 //    TextSample()
@@ -32,7 +32,7 @@ fun App(files: FileManager, platform: Platform) {
 //    ChangeHandlerSample(files)
 //    HintHandlerSample(files)
 //    DynamicJSONSample(files)
-//    MasterSample(files, platform)
+    MasterSample(files, platform)
 //    CollectionBulkInputPerf(files)
 //    FormulaSample()
 }

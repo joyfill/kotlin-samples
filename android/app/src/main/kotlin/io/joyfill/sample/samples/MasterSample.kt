@@ -91,6 +91,7 @@ internal fun MasterSample(files: FileManager, platform: Platform) {
                 SampleType.FORMULA_TEMPLATES -> FormulaTemplatesSample(files, platform)
                 SampleType.CHANGE_HANDLER_2_DOCUMENT -> ChangeHandlerSample(files)
                 SampleType.CHANGE_HANDLER_SERVICE_TRADE -> HintHandlerSample(files)
+                SampleType.API_SAMPLE -> ApiSample()
                 null -> SampleGrid { sampleType -> currentSample = sampleType }
             }
         }
@@ -154,5 +155,9 @@ private enum class SampleType(val title: String, val description: String) {
     FORMULA_TEMPLATES(
         "Formula Templates",
         "All of the formula templates in one place, with a working resolver."
-    )
+    ),
+    API_SAMPLE(
+        "API Sample",
+        "Authenticate, list templates, fill and save documents using the API."
+    );
 }

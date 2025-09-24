@@ -53,7 +53,7 @@ kotlin {
     }
 }
 
-fun joyfill(module: String) = "io.joyfill:$module:2.0.0-Beta20"
+fun joyfill(module: String) = "io.joyfill:$module:2.0.0-RC3"
 fun asoft(module: String) = "tz.co.asoft:$module:3.2.2"
 
 dependencies {
