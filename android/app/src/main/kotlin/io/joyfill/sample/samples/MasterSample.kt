@@ -79,7 +79,7 @@ internal fun MasterSample(files: FileManager, platform: Platform) {
                 HorizontalDivider(modifier = Modifier.weight(1F))
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "BUILD: 09/17/2025 (01)",
+                    text = "BUILD: 09/23/2025 (01)",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.SemiBold,
